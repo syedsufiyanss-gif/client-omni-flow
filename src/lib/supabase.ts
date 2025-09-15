@@ -3,11 +3,22 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)
+
+if (!isSupabaseConfigured) {
+  console.warn('Missing Supabase environment variables. Supabase features are disabled until configured.')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+const supabaseFallback = new Proxy(
+  {},
+  {
+    get() {
+      throw new Error('Supabase is not configured. Connect Supabase to enable this feature.')
+    },
+  },
+) as any
+
+export const supabase: any = isSupabaseConfigured ? createClient(supabaseUrl!, supabaseAnonKey!) : supabaseFallback
 
 // Database types
 export interface Database {
