@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { User, Session } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
+import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 
 interface Profile {
   id: string
@@ -34,6 +34,12 @@ export function useAuth() {
   })
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      // Supabase not configured: mark as not loading so UI can render LoginForm or placeholder
+      setAuthState(prev => ({ ...prev, loading: false }))
+      return
+    }
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setAuthState(prev => ({ ...prev, session, user: session?.user ?? null }))
@@ -62,6 +68,10 @@ export function useAuth() {
   }, [])
 
   const fetchProfile = async (userId: string) => {
+    if (!isSupabaseConfigured) {
+      setAuthState(prev => ({ ...prev, loading: false }))
+      return
+    }
     try {
       const { data: profile, error } = await supabase
         .from('profiles')
@@ -83,6 +93,11 @@ export function useAuth() {
   }
 
   const signIn = async (email: string, password: string) => {
+    if (!isSupabaseConfigured) {
+      const error = new Error('Supabase is not configured')
+      console.error('Error signing in:', error)
+      return { data: null, error }
+    }
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -99,6 +114,11 @@ export function useAuth() {
   }
 
   const signUp = async (email: string, password: string, metadata?: any) => {
+    if (!isSupabaseConfigured) {
+      const error = new Error('Supabase is not configured')
+      console.error('Error signing up:', error)
+      return { data: null, error }
+    }
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -118,6 +138,10 @@ export function useAuth() {
   }
 
   const signOut = async () => {
+    if (!isSupabaseConfigured) {
+      console.error('Error signing out: Supabase is not configured')
+      return
+    }
     try {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
@@ -128,6 +152,11 @@ export function useAuth() {
 
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!authState.user) return { error: 'Not authenticated' }
+    if (!isSupabaseConfigured) {
+      const error = new Error('Supabase is not configured')
+      console.error('Error updating profile:', error)
+      return { data: null, error }
+    }
 
     try {
       const { data, error } = await supabase
