@@ -14,6 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      accounts: {
+        Row: {
+          annual_revenue: number | null
+          billing_address: Json | null
+          company_id: string | null
+          created_at: string | null
+          created_by: string | null
+          employees_count: number | null
+          id: string
+          industry: string | null
+          name: string
+          owner_id: string | null
+          parent_account_id: string | null
+          shipping_address: Json | null
+          status: string | null
+          tags: string[] | null
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          annual_revenue?: number | null
+          billing_address?: Json | null
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          employees_count?: number | null
+          id?: string
+          industry?: string | null
+          name: string
+          owner_id?: string | null
+          parent_account_id?: string | null
+          shipping_address?: Json | null
+          status?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          annual_revenue?: number | null
+          billing_address?: Json | null
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          employees_count?: number | null
+          id?: string
+          industry?: string | null
+          name?: string
+          owner_id?: string | null
+          parent_account_id?: string | null
+          shipping_address?: Json | null
+          status?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accounts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accounts_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accounts_parent_account_id_fkey"
+            columns: ["parent_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           address: Json | null
@@ -64,6 +150,370 @@ export type Database = {
           website?: string | null
         }
         Relationships: []
+      }
+      company_settings: {
+        Row: {
+          company_id: string
+          key: string
+          updated_at: string | null
+          updated_by: string | null
+          value: Json | null
+        }
+        Insert: {
+          company_id: string
+          key: string
+          updated_at?: string | null
+          updated_by?: string | null
+          value?: Json | null
+        }
+        Update: {
+          company_id?: string
+          key?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          value?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contacts: {
+        Row: {
+          account_id: string | null
+          company_id: string | null
+          created_at: string | null
+          created_by: string | null
+          department: string | null
+          email: string | null
+          first_name: string | null
+          id: string
+          job_title: string | null
+          last_name: string | null
+          mobile: string | null
+          owner_id: string | null
+          phone: string | null
+          preferences: Json | null
+          social_profiles: Json | null
+          tags: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          account_id?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          department?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          job_title?: string | null
+          last_name?: string | null
+          mobile?: string | null
+          owner_id?: string | null
+          phone?: string | null
+          preferences?: Json | null
+          social_profiles?: Json | null
+          tags?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          account_id?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          department?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          job_title?: string | null
+          last_name?: string | null
+          mobile?: string | null
+          owner_id?: string | null
+          phone?: string | null
+          preferences?: Json | null
+          social_profiles?: Json | null
+          tags?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_contacts_account"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      custom_field_definitions: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          created_by: string | null
+          entity_type: string
+          field_type: Database["public"]["Enums"]["field_type"]
+          id: string
+          is_system: boolean | null
+          key: string
+          label: string
+          options: Json | null
+          order_index: number | null
+          required: boolean | null
+          updated_at: string | null
+          validation: Json | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          entity_type: string
+          field_type: Database["public"]["Enums"]["field_type"]
+          id?: string
+          is_system?: boolean | null
+          key: string
+          label: string
+          options?: Json | null
+          order_index?: number | null
+          required?: boolean | null
+          updated_at?: string | null
+          validation?: Json | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          entity_type?: string
+          field_type?: Database["public"]["Enums"]["field_type"]
+          id?: string
+          is_system?: boolean | null
+          key?: string
+          label?: string
+          options?: Json | null
+          order_index?: number | null
+          required?: boolean | null
+          updated_at?: string | null
+          validation?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_field_definitions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custom_field_definitions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      custom_field_values: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          field_definition_id: string | null
+          id: string
+          updated_at: string | null
+          value: Json | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          field_definition_id?: string | null
+          id?: string
+          updated_at?: string | null
+          value?: Json | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          field_definition_id?: string | null
+          id?: string
+          updated_at?: string | null
+          value?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_field_values_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custom_field_values_field_definition_id_fkey"
+            columns: ["field_definition_id"]
+            isOneToOne: false
+            referencedRelation: "custom_field_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deals: {
+        Row: {
+          account_id: string | null
+          actual_close_date: string | null
+          company_id: string | null
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          deal_source: string | null
+          description: string | null
+          expected_close_date: string | null
+          id: string
+          lost_reason: string | null
+          next_step: string | null
+          owner_id: string | null
+          pipeline_id: string | null
+          primary_contact_id: string | null
+          probability: number | null
+          stage_id: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+          value: number | null
+        }
+        Insert: {
+          account_id?: string | null
+          actual_close_date?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          deal_source?: string | null
+          description?: string | null
+          expected_close_date?: string | null
+          id?: string
+          lost_reason?: string | null
+          next_step?: string | null
+          owner_id?: string | null
+          pipeline_id?: string | null
+          primary_contact_id?: string | null
+          probability?: number | null
+          stage_id?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+          value?: number | null
+        }
+        Update: {
+          account_id?: string | null
+          actual_close_date?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          deal_source?: string | null
+          description?: string | null
+          expected_close_date?: string | null
+          id?: string
+          lost_reason?: string | null
+          next_step?: string | null
+          owner_id?: string | null
+          pipeline_id?: string | null
+          primary_contact_id?: string | null
+          probability?: number | null
+          stage_id?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deals_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipelines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_primary_contact_id_fkey"
+            columns: ["primary_contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "pipeline_stages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       leads: {
         Row: {
@@ -150,6 +600,200 @@ export type Database = {
           },
         ]
       }
+      permissions: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          key: string
+          module: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          key: string
+          module: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          key?: string
+          module?: string
+        }
+        Relationships: []
+      }
+      pipeline_stages: {
+        Row: {
+          automation_rules: Json | null
+          created_at: string | null
+          default_probability: number | null
+          description: string | null
+          id: string
+          is_lost: boolean | null
+          is_won: boolean | null
+          name: string
+          order_index: number | null
+          pipeline_id: string | null
+          stage_color: string | null
+        }
+        Insert: {
+          automation_rules?: Json | null
+          created_at?: string | null
+          default_probability?: number | null
+          description?: string | null
+          id?: string
+          is_lost?: boolean | null
+          is_won?: boolean | null
+          name: string
+          order_index?: number | null
+          pipeline_id?: string | null
+          stage_color?: string | null
+        }
+        Update: {
+          automation_rules?: Json | null
+          created_at?: string | null
+          default_probability?: number | null
+          description?: string | null
+          id?: string
+          is_lost?: boolean | null
+          is_won?: boolean | null
+          name?: string
+          order_index?: number | null
+          pipeline_id?: string | null
+          stage_color?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_stages_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipelines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pipelines: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          entity_type: string
+          id: string
+          is_default: boolean | null
+          name: string
+          settings: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          entity_type?: string
+          id?: string
+          is_default?: boolean | null
+          name: string
+          settings?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          entity_type?: string
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          settings?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipelines_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pipelines_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category: string | null
+          company_id: string | null
+          cost_price: number | null
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          sku: string | null
+          tax_rate: number | null
+          unit_price: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          company_id?: string | null
+          cost_price?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          sku?: string | null
+          tax_rate?: number | null
+          unit_price?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          company_id?: string | null
+          cost_price?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          sku?: string | null
+          tax_rate?: number | null
+          unit_price?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -206,6 +850,230 @@ export type Database = {
           },
         ]
       }
+      role_permissions: {
+        Row: {
+          allowed: boolean | null
+          conditions: Json | null
+          permission_id: string
+          role_id: string
+        }
+        Insert: {
+          allowed?: boolean | null
+          conditions?: Json | null
+          permission_id: string
+          role_id: string
+        }
+        Update: {
+          allowed?: boolean | null
+          conditions?: Json | null
+          permission_id?: string
+          role_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "role_permissions_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roles: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_system: boolean | null
+          name: string
+          permissions: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean | null
+          name: string
+          permissions?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean | null
+          name?: string
+          permissions?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      settings: {
+        Row: {
+          created_at: string | null
+          data_type: string | null
+          default_value: Json | null
+          description: string | null
+          id: string
+          key: string
+          module: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_type?: string | null
+          default_value?: Json | null
+          description?: string | null
+          id?: string
+          key: string
+          module?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data_type?: string | null
+          default_value?: Json | null
+          description?: string | null
+          id?: string
+          key?: string
+          module?: string | null
+        }
+        Relationships: []
+      }
+      teams: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          role_id: string
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          role_id: string
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          role_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_teams: {
+        Row: {
+          joined_at: string | null
+          role_in_team: string | null
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          joined_at?: string | null
+          role_in_team?: string | null
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          joined_at?: string | null
+          role_in_team?: string | null
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_teams_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_teams_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -228,6 +1096,20 @@ export type Database = {
         | "negotiation"
         | "closed_won"
         | "closed_lost"
+      field_type:
+        | "text"
+        | "number"
+        | "date"
+        | "datetime"
+        | "boolean"
+        | "select"
+        | "multi_select"
+        | "email"
+        | "phone"
+        | "url"
+        | "textarea"
+        | "json"
+        | "formula"
       invoice_status: "draft" | "sent" | "paid" | "overdue" | "cancelled"
       lead_status:
         | "new"
@@ -376,6 +1258,21 @@ export const Constants = {
         "negotiation",
         "closed_won",
         "closed_lost",
+      ],
+      field_type: [
+        "text",
+        "number",
+        "date",
+        "datetime",
+        "boolean",
+        "select",
+        "multi_select",
+        "email",
+        "phone",
+        "url",
+        "textarea",
+        "json",
+        "formula",
       ],
       invoice_status: ["draft", "sent", "paid", "overdue", "cancelled"],
       lead_status: [
